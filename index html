@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B1-B2 English Mastery: Tense & Aspect Challenge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #151e33;
+      --border: #243252;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.12);
+      --error: #ef4444;
+      --error-bg: rgba(239, 68, 68, 0.12);
+      --badge-bg: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 780px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    /* Top bar */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .badge {
+      background: var(--badge-bg);
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .score-tracker {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #818cf8;
+    }
+
+    /* Progress bar */
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 9999px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      width: 12.5%;
+      transition: width 0.3s ease;
+    }
+
+    /* Target Sentence Box */
+    .sentence-card {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+
+    .tense-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #a5b4fc;
+      margin-bottom: 8px;
+    }
+
+    .target-sentence {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.4;
+    }
+
+    .prompt-question {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 20px;
+    }
+
+    /* Options */
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .option-btn {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-size: 0.98rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background: #27354f;
+      border-color: #475569;
+      transform: translateY(-1px);
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+    }
+
+    .key-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .option-btn.correct {
+      background: var(--success-bg) !important;
+      border-color: var(--success) !important;
+      color: #6ee7b7;
+    }
+
+    .option-btn.correct .key-circle {
+      background: var(--success);
+      color: #042f2e;
+    }
+
+    .option-btn.wrong {
+      background: var(--error-bg) !important;
+      border-color: var(--error) !important;
+      color: #fca5a5;
+    }
+
+    .option-btn.wrong .key-circle {
+      background: var(--error);
+      color: #450a0a;
+    }
+
+    /* Feedback Card */
+    .feedback-box {
+      display: none;
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .feedback-box.correct {
+      background: var(--success-bg);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #d1fae5;
+    }
+
+    .feedback-box.incorrect {
+      background: var(--error-bg);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fee2e2;
+    }
+
+    .feedback-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feedback-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Action footer */
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-next {
+      display: none;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-next:hover {
+      background: var(--accent-hover);
+    }
+
+    /* End Screen */
+    .end-screen {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .end-screen h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .final-score {
+      font-size: 3.5rem;
+      font-weight: 800;
+      font-family: 'Space Grotesk', monospace;
+      color: #818cf8;
+      margin: 16px 0;
+    }
+
+    .btn-restart {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Active Quiz View -->
+    <div id="quiz-view">
+      <div class="header-bar">
+        <span class="badge" id="step-badge">Question 1 of 8</span>
+        <span class="score-tracker" id="score-display">Score: 0</span>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-bar"></div>
+      </div>
+
+      <div class="sentence-card">
+        <span class="tense-tag" id="tense-focus">TENSE & ASPECT</span>
+        <div class="target-sentence" id="sentence-text">"Loading sentence..."</div>
+      </div>
+
+      <p class="prompt-question" id="prompt-text">What is the precise grammatical function or context of this sentence?</p>
+
+      <div class="options-grid" id="options-container">
+        <!-- Buttons rendered via JavaScript -->
+      </div>
+
+      <div class="feedback-box" id="feedback-container">
+        <div class="feedback-title" id="feedback-heading"></div>
+        <div class="feedback-text" id="feedback-content"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-next" id="next-btn" onclick="nextQuestion()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Final Result Screen -->
+    <div class="end-screen" id="end-view">
+      <h2>Session Complete!</h2>
+      <p style="color: var(--text-muted);">You finished all B1-B2 tense and aspect challenges.</p>
+      <div class="final-score" id="final-score-text">0 / 8</div>
+      <p id="final-message" style="color: #cbd5e1; max-width: 500px; margin: 0 auto;"></p>
+      <button class="btn-restart" onclick="restartQuiz()">Restart Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        sentence: "He is constantly leaving his dirty dishes in the sink.",
+        category: "Present Progressive (Behavioral Habit)",
+        prompt: "Why is the Present Progressive used here instead of the Simple Present?",
+        options: [
+          { text: "It expresses an action in progress right at the moment of speaking.", correct: false },
+          { text: "It denotes an annoying, repeated habit that frustrates the speaker.", correct: true },
+          { text: "It refers to a definite future arrangement agreed with roommates.", correct: false }
+        ],
+        explanation: "When used with frequency adverbs like 'constantly' or 'always', the Present Progressive expresses irritation or emphasis about an overly repeated behavior, rather than a neutral daily routine."
+      },
+      {
+        sentence: "The research team was analyzing the water samples when the power cut occurred.",
+        category: "Simple Past vs. Past Continuous",
+        prompt: "What role does 'the power cut occurred' play in this sentence?",
+        options: [
+          { text: "It is an instantaneous event in the Simple Past that interrupted a longer background activity.", correct: true },
+          { text: "It describes a habitual action repeated over several weeks.", correct: false },
+          { text: "It illustrates a planned scientific procedure carried out in sequence.", correct: false }
+        ],
+        explanation: "'The power cut occurred' uses the Simple Past to express a completed, instantaneous point-in-time interruption that broke into the ongoing background action ('was analyzing')."
+      },
+      {
+        sentence: "This new engine consumes 25% less fuel than previous iterations.",
+        category: "Simple Present (Technical Characteristics)",
+        prompt: "Why is the Simple Present required instead of 'is consuming'?",
+        options: [
+          { text: "It is an action happening right this exact second.", correct: false },
+          { text: "It states a permanent characteristic, technical specification, and scientific fact.", correct: true },
+          { text: "It is a temporary trend that will change tomorrow morning.", correct: false }
+        ],
+        explanation: "Permanent specifications, scientific truths, and mechanical performance are timeless facts. They do not describe temporary ongoing trends, so they require the Simple Present."
+      },
+      {
+        sentence: "I am having dinner with the managing director this Friday evening.",
+        category: "Present Progressive (Future Arrangements)",
+        prompt: "What timeframe and communicative function is represented here?",
+        options: [
+          { text: "A physical action happening right now as the speaker talks.", correct: false },
+          { text: "A regular habit that happens every Friday evening.", correct: false },
+          { text: "A pre-arranged, confirmed personal plan in the near future.", correct: true }
+        ],
+        explanation: "The Present Progressive is regularly used for definite, scheduled personal arrangements in the future where time, place, or participants have already been established."
+      },
+      {
+        sentence: "While we were renovating the basement, we found an antique wooden chest.",
+        category: "Simple Past vs. Past Continuous",
+        prompt: "Why is 'found' in the Simple Past rather than Past Continuous?",
+        options: [
+          { text: "Because finding is a momentary completion, not an activity prolonged over time.", correct: true },
+          { text: "Because 'find' can never take an -ing form under any circumstance.", correct: false },
+          { text: "Because it happened before the basement renovation started.", correct: false }
+        ],
+        explanation: "'Find' represents a punctual, instantaneous event. The discovery occurred at a single moment during the prolonged process of renovating ('were renovating')."
+      },
+      {
+        sentence: "I understand the proposal, but I am still doubting its feasibility.",
+        category: "Stative Verbs in Progressive Form",
+        prompt: "Why is 'am doubting' acceptable here even though 'doubt' is commonly stative?",
+        options: [
+          { text: "It is grammatically wrong; it must always be 'I doubt'.", correct: false },
+          { text: "It emphasizes an active, temporary mental conflict occurring during this evaluation phase.", correct: true },
+          { text: "It describes a permanent personality trait of the speaker.", correct: false }
+        ],
+        explanation: "Some mental state verbs shift into the progressive to emphasize an active, temporary processing of thoughts or a feeling that is in active debate right around this period."
+      },
+      {
+        sentence: "The flight to Munich departs at 06:45 tomorrow morning.",
+        category: "Simple Present (Schedules & Timetables)",
+        prompt: "Why is the Simple Present used for an event taking place tomorrow?",
+        options: [
+          { text: "Because public timetables, transportation, and official agendas take Simple Present.", correct: true },
+          { text: "Because the speaker is boarding the plane right at this very moment.", correct: false },
+          { text: "Because it expresses an unverified assumption about tomorrow's weather.", correct: false }
+        ],
+        explanation: "Events governed by fixed timetables, public schedules, or established itineraries take the Simple Present, even when referring to future events."
+      },
+      {
+        sentence: "She was living in Berlin during the late nineties.",
+        category: "Past Continuous (Temporary Past Duration)",
+        prompt: "What nuance does 'was living' communicate in comparison to 'lived'?",
+        options: [
+          { text: "It highlights her stay as a temporary, evolving background period of her life.", correct: true },
+          { text: "It indicates that she never actually completed her move to Berlin.", correct: false },
+          { text: "It indicates that the action is still continuing today in the present.", correct: false }
+        ],
+        explanation: "The Past Continuous can highlight a past period as an extended, temporary chapter or background timeframe, whereas 'lived' often treats it as a closed, neutral historical fact."
+      }
+    ];
+
+    let currentIdx = 0;
+    let score = 0;
+    let answered = false;
+
+    function renderQuestion() {
+      answered = false;
+      const q = questions[currentIdx];
+
+      // Update progress & labels
+      document.getElementById("step-badge").textContent = `Question ${currentIdx + 1} of ${questions.length}`;
+      document.getElementById("progress-bar").style.width = `${((currentIdx + 1) / questions.length) * 100}%`;
+      document.getElementById("tense-focus").textContent = q.category;
+      document.getElementById("sentence-text").textContent = `"${q.sentence}"`;
+      document.getElementById("prompt-text").textContent = q.prompt;
+
+      // Hide feedback and next button
+      const feedbackBox = document.getElementById("feedback-container");
+      feedbackBox.style.display = "none";
+      feedbackBox.className = "feedback-box";
+      document.getElementById("next-btn").style.display = "none";
+
+      // Render options
+      const container = document.getElementById("options-container");
+      container.innerHTML = "";
+
+      const keys = ["A", "B", "C"];
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `<span class="key-circle">${keys[idx]}</span><span>${opt.text}</span>`;
+        btn.onclick = () => selectOption(idx);
+        container.appendChild(btn);
+      });
+    }
+
+    function selectOption(chosenIdx) {
+      if (answered) return;
+      answered = true;
+
+      const q = questions[currentIdx];
+      const isCorrect = q.options[chosenIdx].correct;
+      const buttons = document.querySelectorAll(".option-btn");
+
+      buttons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (q.options[idx].correct) {
+          btn.classList.add("correct");
+        } else if (idx === chosenIdx) {
+          btn.classList.add("wrong");
+        }
+      });
+
+      // Show Feedback
+      const feedbackBox = document.getElementById("feedback-container");
+      const title = document.getElementById("feedback-heading");
+      const text = document.getElementById("feedback-content");
+
+      feedbackBox.style.display = "block";
+
+      if (isCorrect) {
+        score++;
+        document.getElementById("score-display").textContent = `Score: ${score}`;
+        feedbackBox.className = "feedback-box correct";
+        title.innerHTML = "✓ Correct Analysis!";
+        text.innerHTML = `<strong>Why:</strong> ${q.explanation}`;
+      } else {
+        feedbackBox.className = "feedback-box incorrect";
+        title.innerHTML = "✕ Incorrect Choice";
+        text.innerHTML = `<strong>Grammar Insight:</strong> ${q.explanation}`;
+      }
+
+      document.getElementById("next-btn").style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+      currentIdx++;
+      if (currentIdx < questions.length) {
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById("quiz-view").style.display = "none";
+      document.getElementById("end-view").style.display = "block";
+
+      document.getElementById("final-score-text").textContent = `${score} / ${questions.length}`;
+
+      const msg = document.getElementById("final-message");
+      if (score === 8) {
+        msg.textContent = "Exceptional mastery! You demonstrate a solid grasp of nuanced B1-B2 aspect and tense semantics.";
+      } else if (score >= 5) {
+        msg.textContent = "Solid performance! You have a firm grasp of the core concepts, with minor refinements needed for specific stative or progressive nuances.";
+      } else {
+        msg.textContent = "Good practice session! Review the distinction between permanent states, temporary actions, and interrupted past events.";
+      }
+    }
+
+    function restartQuiz() {
+      currentIdx = 0;
+      score = 0;
+      document.getElementById("score-display").textContent = "Score: 0";
+      document.getElementById("quiz-view").style.display = "block";
+      document.getElementById("end-view").style.display = "none";
+      renderQuestion();
+    }
+
+    // Initialize first question on load
+    renderQuestion();
+  </script>
+</body>
+</html>
